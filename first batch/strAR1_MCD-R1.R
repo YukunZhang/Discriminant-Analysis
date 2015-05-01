@@ -89,8 +89,7 @@ setting=strsplit(setting[[1]],',')
                        {del1=c(25,23,25)}else
                          if(as.numeric(setting[[1]][8])==6)
                          {del1=c(30,25,30)}
-    }
-    else 
+    } else 
       if (q==7){del2=rep(20,7)
                 if(as.numeric(setting[[1]][8])==1)
                 {    
