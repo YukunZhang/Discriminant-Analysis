@@ -13,6 +13,7 @@ library(Matrix)
 #setting=read.csv(file="simulation-settings.csv",header=TRUE)
 #setting=read.csv(file="/files3/home/yukzhang/simulation-settings2.csv",header=TRUE)
 setting=commandArgs(trailing=TRUE)
+# setting=list(c(2,7,'CS',0.3,32,48,1,9,1,"norm",1))
 setting=strsplit(setting[[1]],',')
   tryCatch({
     p=as.numeric(setting[[1]][1])  # number of time points
@@ -377,17 +378,18 @@ setting=strsplit(setting[[1]],',')
     predacu2=1-clserr2
     overallacu=mean(c(predacu1,predacu2))
     overallacusd=sd(apply(claserr,1,mean))
-	 out[1]=setting[1]
-     out[2]=setting[2]
-     out[3]=setting[3]
-     out[4]=setting[4]
-     out[5]=setting[5]
-     out[6]=setting[6]
-     out[7]=setting[7]
-	 out[8]=setting[8]
-	 out[8]=setting[8]
-	 out[9]=setting[9]
-	 out[10]=setting[10]
+    out=matrix(0,1,18)
+	 out[1]=setting[[1]][1]
+     out[2]=setting[[1]][2]
+     out[3]=setting[[1]][3]
+     out[4]=setting[[1]][4]
+     out[5]=setting[[1]][5]
+     out[6]=setting[[1]][6]
+     out[7]=setting[[1]][7]
+	 out[8]=setting[[1]][8]
+	 out[9]=setting[[1]][9]
+	 out[10]=setting[[1]][10]
+	 out[11]=setting[[1]][11]
      out[12]="Conventional"
      out[13]=predacu1
      out[14]=predacu2
