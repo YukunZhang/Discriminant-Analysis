@@ -10,4 +10,4 @@ Then the second batch (quadratic)
 The spreadsheet is in the right order
 
 
-First Batch works on desktop
+First Batch works on desktop--May 1st 9:55AM
