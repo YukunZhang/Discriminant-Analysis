@@ -8,3 +8,6 @@ Then the second batch (quadratic)
 
 
 The spreadsheet is in the right order
+
+
+First Batch works on desktop
