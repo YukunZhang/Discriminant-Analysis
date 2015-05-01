@@ -38,9 +38,13 @@ We still use the computing method for normal distribution with CS or AR(1) corre
 
 ##Output
 We will record 
+
 a.  Misclassification error/Prediction accuracy
+
 i.	Group-specific prediction error/accuracy 
+
 ii.	overall accuracy
+
 b.	Standard error of prediction accuracy
 
 ##Simulation Running
