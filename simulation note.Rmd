@@ -1,0 +1,53 @@
+---
+title: "Discriminant Simulation Note"
+author: "Yukun Zhang"
+date: "Friday, May 01, 2015"
+output: html_document
+---
+## The idea of project
+we extent Roy and Khattree's idea to non-normal case. Under non-normal distribution (Cauchy, lognormal even T), the orginial method may not as presice. 
+We implement several alternative data trimming methods:
+
+1.MCD--Minimum Covariance Determinant (MCD) estimator looks for the subset of h data points whose covariance matrix has the smallest determinant
+
+2.MVE-- Minimum Volume Ellipsoid (MVE) searches for the ellipsoid with the smallest volume that covers h data points.
+
+3.Trimmed likelihood--Rank the likelihood score and trim 5% on each end.
+
+4.Trimmed likelihood with replacement--Replace that 10% by the 5th and 95th number
+
+We still use the computing method for normal distribution with CS or AR(1) correlation structure on V and structure/Unstructured mean vectors(sigma) and equal/unqual omega.
+
+
+##Simulation Settings
+1. 8 procedures (CS/AR Structured/Unstructured equal/unqual(Homogeneity heterogeneity) covariance)
+
+2. 4 population distrbutions(Normal, T, Log-normal, Cauchy)
+
+3. 4 sample size (40,40), (32,48), (70,70), (56,84)
+
+4. number of time points: p=2,3 number of measurements: q=3 or 7
+
+5. Within-variable autocorrelation matrix CS/AR rou=0.3 or 0.7
+
+6. between vairbale covariance under each q and rou
+
+7. Covariance homogeneity (omega1=1,4,9 omega2)
+
+8. 6 differnt means for each q
+
+##Output
+We will record 
+a.  Misclassification error/Prediction accuracy
+i.	Group-specific prediction error/accuracy 
+ii.	overall accuracy
+b.	Standard error of prediction accuracy
+
+##Simulation Running
+start with p=2 and linear part
+p=3 and quadratic later
+
+we have 9216 conditions with 40 scripts (8 procedures*5 methods)
+
+
+
