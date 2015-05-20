@@ -20,41 +20,26 @@ setting=strsplit(setting[[1]],',')
     nsim=1000 #number of simulations
     claserr=matrix(0,nsim,2)
     one=matrix(rep(1,p),p,1)   #increasing structured mean
-    c1=diag(c(0,rep(1,p-2),0))
-    c2=matrix(0,nrow=p,ncol=p)
-    c2[row(c2)==col(c2)]=0
-    c2[abs(row(c2)-col(c2))==1]=1
-    rou1=as.numeric(setting[[1]][4]) #correlation of repeated measures for population 1  rou can be 0.5 or 0.8
-    # rou2=0.5
-    if(setting[[1]][3]=="AR")
-    {  V1=(1-rou1^2)*solve((diag(p)+rou1^2*c1-rou1*c2))  }  else #AR(1)correlation structure
-      if(setting[[1]][3]=="CS")
-      {  V1=(1-rou1)*diag(p)+rou1*one%*%t(one)}      #CS correlation structure
-    # V2=(1-rou2^2)*solve((diag(p)+rou2^2*c1-rou2*c2))    #AR(1)correlation structure
-    if (q==7&rou1==0.7){sigma1=matrix(c(1,0.65,0.66,0.7,0.72,0.65,0.75,
-                                        0.65,1,0.7,0.7,0.67,0.72,0.74,
-                                        0.66,0.7,1,0.71,0.75,0.63,0.74,
-                                        0.7,0.7,0.71,1,0.7,0.65,0.73,
-                                        0.72,0.67,0.75,0.7,1,0.68,0.74,
-                                        0.65,0.72,0.63,0.65,0.68,1,0.75,
-                                        0.75,0.74,0.74,0.73,0.74,0.75,1),nrow=7)
-    }else 
-      if (q==3&rou1==0.7){sigma1=matrix(c(1,0.65,0.66,
-                                          0.65,1,0.7,
-                                          0.66,0.7,1),nrow=3)
-      }else
-        if(q==3 &rou1==0.3){sigma1=matrix(c(1,0.15,0.3,
-                                            0.15,1,0.45,
-                                            0.3,0.45,1),nrow=3)} else
-                                              if(q==7&rou1==0.3){sigma1=matrix(c(1,0.35,0.2,0.2,0.3,0.25,0.3,
-                                                                                 0.35,1,0.3,0.3,0.37,0.32,0.34,
-                                                                                 0.2,0.3,1,0.31,0.35,0.32,0.34,
-                                                                                 0.2,0.3,0.31,1,0.3,0.25,0.33,
-                                                                                 0.3,0.37,0.35,0.3,1,0.28,0.34,
-                                                                                 0.25,0.32,0.32,0.25,0.28,1,0.35,
-                                                                                 0.3,0.34,0.34,0.33,0.34,0.35,1
-                                              ),nrow=7)}
-    
+one1=matrix(rep(1,q),q,1)  
+c1=diag(c(0,rep(1,p-2),0))
+c11=diag(c(0,rep(1,q-2),0))
+
+c2=matrix(0,nrow=p,ncol=p)
+c21=matrix(0,nrow=q,ncol=q)
+c2[row(c2)==col(c2)]=0
+c21[row(c21)==col(c21)]=0
+c2[abs(row(c2)-col(c2))==1]=1
+c21[abs(row(c21)-col(c21))==1]=1
+rou1=as.numeric(setting[[1]][4]) #correlation of repeated measures for population 1  rou can be 0.5 or 0.8
+# rou2=0.5
+if(setting[[1]][3]=="AR")
+{  V1=(1-rou1^2)*solve((diag(p)+rou1^2*c1-rou1*c2))  }  else #AR(1)correlation structure
+  if(setting[[1]][3]=="CS")
+  {  V1=(1-rou1)*diag(p)+rou1*one%*%t(one)}      #CS correlation structure
+# V2=(1-rou2^2)*solve((diag(p)+rou2^2*c1-rou2*c2))    #AR(1)correlation structure
+if (setting[[1]][11]=="CS"){sigma1=(1-rou1)*diag(q)+rou1*one1%*%t(one1)
+}else 
+  if (setting[[1]][11]=="AR"){sigma1=(1-rou1^2)*solve((diag(q)+rou1^2*c11-rou1*c21)) }
     
     sigma1=sigma1*60
     omega1=V1%x%sigma1
@@ -358,27 +343,29 @@ setting=strsplit(setting[[1]],',')
     overallacu=mean(c(predacu1,predacu2))
     overallacusd=sd(apply(claserr,1,mean))
     out=matrix(0,1,18)
-    out[1]=setting[[1]][1]
-    out[2]=setting[[1]][2]
-    out[3]=setting[[1]][3]
-    out[4]=setting[[1]][4]
-    out[5]=setting[[1]][5]
-    out[6]=setting[[1]][6]
-    out[7]=setting[[1]][7]
-    out[8]=setting[[1]][8]
-    out[9]=setting[[1]][9]
-    out[10]=setting[[1]][10]
-    out[11]=setting[[1]][11]
-     out[12]="MVE"
-     out[13]=predacu1
-     out[14]=predacu2
-     out[15]=sdclserr1
-     out[16]=sdclserr2
-     out[17]=overallacu
-     out[18]=overallacusd
+    out[1]="str"
+    out[2]="AR"
+    out[3]=setting[[1]][1]
+    out[4]=setting[[1]][2]
+    out[5]=setting[[1]][3]
+    out[6]=setting[[1]][4]
+    out[7]=setting[[1]][5]
+    out[8]=setting[[1]][6]
+    out[9]=setting[[1]][7]
+    out[10]=setting[[1]][8]
+    out[11]=setting[[1]][9]
+    out[12]=setting[[1]][10]
+    out[13]=setting[[1]][11]
+     out[14]=setting[[1]][12]
+     out[15]="MVE"
+     out[16]=predacu1
+     out[17]=predacu2
+     out[18]=sdclserr1
+     out[19]=sdclserr2
+     out[20]=overallacu
+     out[21]=overallacusd
 
-
-    file=paste ("str_CS1_MVE_Row#",as.numeric(setting[[1]][11]), ".csv", sep="")
+    file=paste ("str_CS1_MVE_Row#",as.numeric(setting[[1]][12]), ".csv", sep="")
     write.csv(out,file=file,row.names=FALSE)
    }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
  
