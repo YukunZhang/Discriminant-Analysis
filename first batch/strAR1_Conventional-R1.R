@@ -12,9 +12,9 @@ library(fMultivar)
 library(Matrix)
 #setting=read.csv(file="simulation-settings.csv",header=TRUE)
 #setting=read.csv(file="/files3/home/yukzhang/simulation-settings2.csv",header=TRUE)
-#setting=commandArgs(trailing=TRUE)
+setting=commandArgs(trailing=TRUE)
 # setting=list(c(2,7,'CS',0.3,32,48,1,9,1,"norm",1))
-#setting=strsplit(setting[[1]],',')
+setting=strsplit(setting[[1]],',')
   tryCatch({
     p=as.numeric(setting[[1]][1])  # number of time points
     q=as.numeric(setting[[1]][2])# number of measurements
