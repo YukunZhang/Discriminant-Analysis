@@ -1,3 +1,4 @@
+####when p=2####
 
 if(p==5){
   for(i in 1:q)
@@ -23,7 +24,15 @@ if(p==3){
     vi1=vi1+t(gp1an)%*%gp1an
   }
 }
+
 vi=vi1/q
+# a2=a[,c(2,2+q,2+2*q)]   #measurement 2
+# a3=a[,c(3,3+q,3+2*q)]    #measurement 3
+# }
+# b1=b[,c(1,4,7)]   #measurement 1
+# b2=b[,c(2,5,8)]   #measurement 2
+# b3=b[,c(3,6,9)]   #measurement 3
+
 
 j0=matrix(0,q,q)
 if (p==3)
@@ -39,6 +48,10 @@ if (p==3)
   j4=cbind(j0,j0,j0,diag(q),j0)
   j5=cbind(j0,j0,j0,j0,diag(q))
 }
+d1=matrix(amu,q,p)
+d2=matrix(bmu,q,p)
+
+
 
 w1=matrix(0,p*q,p*q)
 for (i in 1:n1)
@@ -52,15 +65,36 @@ for (i in 1:n2)
   subb=b[i,]
   w2=w2+t(subb-bmu)%*%(subb-bmu)
 }
-w=w1+w2
+
 
 #### Calculating the initial estimate Ve of V. rest is the common estimate of rho in both the classes####
 rest=(sum(vi)-tr(vi))/(p*(p-1))
 ve=(1-rest^2)*solve((diag(p)+rest^2*c1-rest*c2)) 
+#print (ve)
 #### Calculating the mle's mlv and mlsig of V and sigma respectivaly in population 2####
 mlsige=matrix(0,q,q)
 iter=0
 maxab=1
+ive=solve(ve)
+try=diag(1,p)
+try1=t(try)%*%ive%*%try
+
+if (p==3)
+{delta1=(sum(try1[1,])*d1[,1]+sum(try1[2,])*d1[,2]+sum(try1[3,])*d1[,3])/sum(try1)
+ delta2=(sum(try1[1,])*d2[,1]+sum(try1[2,])*d1[,2]+sum(try1[3,])*d2[,3])/sum(try1)
+}else
+{delta1=(sum(try1[1,])*d1[,1]+sum(try1[2,])*d1[,2])/sum(try1)
+ delta2=(sum(try1[1,])*d2[,1]+sum(try1[2,])*d1[,2])/sum(try1)
+}
+
+sigma2e=matrix(0,q,q)
+
+
+#  detw=det(w)
+k1=(t(amu)-one%x%delta1)%*%t(t(amu)-one%x%delta1)
+k2=(t(bmu)-one%x%delta2)%*%t(t(bmu)-one%x%delta2)
+
+w=w1+w2+n1*k1+n2*k2
 while ((maxab>converge)&(iter<100))
 {
   ive=solve(ve)
@@ -70,42 +104,54 @@ while ((maxab>converge)&(iter<100))
   for (j in 1:n1)
   {
     subb=a[j,]
-    subba=subb-amu
+    #     subba=subb-amu
+    #     
+    #     sub1=j1%*%t(subba)
+    #     sub2=j2%*%t(subba)
+    sub1=j1%*%t(t(subb))
+    sub2=j2%*%t(t(subb))
+    sub3=j3%*%t(t(subb))
     
-    sub1=j1%*%t(subba)
-    sub2=j2%*%t(subba)
-    sub3=j3%*%t(subba)
+    sub1=sub1-delta1
+    sub2=sub2-delta1
+    sub3=sub3-delta1
+    
     if (p==3){
-      
       sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))
     }else
-    {     sub4=j4%*%t(subba)  
-          sub5=j5%*%t(subba)
-          sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[4,1]*(sub1%*%t(sub4))+try1[5,1]*(sub1%*%t(sub5))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[4,2]*(sub2%*%t(sub4))+try1[5,2]*(sub2%*%t(sub5))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))+try1[4,3]*(sub3%*%t(sub4))+try1[5,3]*(sub3%*%t(sub5))+try1[1,4]*(sub4%*%t(sub1))+try1[2,4]*(sub4%*%t(sub2))+try1[3,4]*(sub4%*%t(sub3))+try1[4,4]*(sub4%*%t(sub4))+try1[5,4]*(sub4%*%t(sub5))+try1[1,5]*(sub5%*%t(sub1))+try1[2,5]*(sub5%*%t(sub2))+try1[3,5]*(sub5%*%t(sub3))+try1[4,5]*(sub5%*%t(sub4))+try1[5,5]*(sub5%*%t(sub5))
+    {  sub4=j4%*%t(t(subb))
+       sub5=j5%*%t(t(subb))
+       sub4=sub4-delta1
+       sub5=sub5-delta1
+       sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[4,1]*(sub1%*%t(sub4))+try1[5,1]*(sub1%*%t(sub5))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[4,2]*(sub2%*%t(sub4))+try1[5,2]*(sub2%*%t(sub5))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))+try1[4,3]*(sub3%*%t(sub4))+try1[5,3]*(sub3%*%t(sub5))+try1[1,4]*(sub4%*%t(sub1))+try1[2,4]*(sub4%*%t(sub2))+try1[3,4]*(sub4%*%t(sub3))+try1[4,4]*(sub4%*%t(sub4))+try1[5,4]*(sub4%*%t(sub5))+try1[1,5]*(sub5%*%t(sub1))+try1[2,5]*(sub5%*%t(sub2))+try1[3,5]*(sub5%*%t(sub3))+try1[4,5]*(sub5%*%t(sub4))+try1[5,5]*(sub5%*%t(sub5))
     }
   }
+  
   for (j in 1:n2)
   {
     subb=b[j,]
-    subba=subb-bmu
+    sub1=j1%*%t(t(subb))
+    sub2=j2%*%t(t(subb))
+    sub3=j3%*%t(t(subb))
     
-    sub1=j1%*%t(subba)
-    sub2=j2%*%t(subba)
-    sub3=j3%*%t(subba)
+    sub1=sub1-delta2
+    sub2=sub2-delta2
+    sub3=sub3-delta2
     
     if (p==3){
-      #   sub3=j3%*%t(subba)
-      #   sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))
-    }else{ sub4=j4%*%t(subba)  
-           sub5=j5%*%t(subba)
-           sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[4,1]*(sub1%*%t(sub4))+try1[5,1]*(sub1%*%t(sub5))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[4,2]*(sub2%*%t(sub4))+try1[5,2]*(sub2%*%t(sub5))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))+try1[4,3]*(sub3%*%t(sub4))+try1[5,3]*(sub3%*%t(sub5))+try1[1,4]*(sub4%*%t(sub1))+try1[2,4]*(sub4%*%t(sub2))+try1[3,4]*(sub4%*%t(sub3))+try1[4,4]*(sub4%*%t(sub4))+try1[5,4]*(sub4%*%t(sub5))+try1[1,5]*(sub5%*%t(sub1))+try1[2,5]*(sub5%*%t(sub2))+try1[3,5]*(sub5%*%t(sub3))+try1[4,5]*(sub5%*%t(sub4))+try1[5,5]*(sub5%*%t(sub5))
+      sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))
+    }else
+    {     sub4=j4%*%t(t(subb))
+          sub5=j5%*%t(t(subb))
+          sub4=sub4-delta2
+          sub5=sub5-delta2
+          sigma2e=sigma2e+try1[1,1]*(sub1%*%t(sub1))+try1[2,1]*(sub1%*%t(sub2))+try1[3,1]*(sub1%*%t(sub3))+try1[4,1]*(sub1%*%t(sub4))+try1[5,1]*(sub1%*%t(sub5))+try1[1,2]*(sub2%*%t(sub1))+try1[2,2]*(sub2%*%t(sub2))+try1[3,2]*(sub2%*%t(sub3))+try1[4,2]*(sub2%*%t(sub4))+try1[5,2]*(sub2%*%t(sub5))+try1[1,3]*(sub3%*%t(sub1))+try1[2,3]*(sub3%*%t(sub2))+try1[3,3]*(sub3%*%t(sub3))+try1[4,3]*(sub3%*%t(sub4))+try1[5,3]*(sub3%*%t(sub5))+try1[1,4]*(sub4%*%t(sub1))+try1[2,4]*(sub4%*%t(sub2))+try1[3,4]*(sub4%*%t(sub3))+try1[4,4]*(sub4%*%t(sub4))+try1[5,4]*(sub4%*%t(sub5))+try1[1,5]*(sub5%*%t(sub1))+try1[2,5]*(sub5%*%t(sub2))+try1[3,5]*(sub5%*%t(sub3))+try1[4,5]*(sub5%*%t(sub4))+try1[5,5]*(sub5%*%t(sub5))
     }
   }
   mlsig=sigma2e/(n*p)
   absig=abs(tr(mlsige-mlsig))
   mlsige=mlsig
   imlsig=solve(mlsig)
-  
   
   k5=tr((diag(p)%x%imlsig)%*%w)
   k6=tr((c1%x%imlsig)%*%w)
